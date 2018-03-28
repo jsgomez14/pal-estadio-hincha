@@ -7,14 +7,17 @@
     tools:context="com.nn.palestadio.android_java.HomeActivity"
     android:background="@drawable/bg">
 
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar" />
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="75dp"
         android:layout_height="76dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="30dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="22dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/ic_photo" />
@@ -50,5 +53,6 @@
         android:layout_alignParentEnd="true"
         android:layout_gravity="end|bottom"
         android:layout_marginBottom="43dp"
-        android:layout_marginEnd="40dp" />
+        android:layout_marginEnd="40dp"
+        app:backgroundTint="@color/colorAccent" />
 </RelativeLayout>

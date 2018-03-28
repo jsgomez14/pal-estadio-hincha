@@ -6,12 +6,17 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
+
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +27,10 @@ public class HomeActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 0);
         }
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         FloatingActionButton floatingButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,5 +39,27 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch(menuItem.getItemId()){
+            case R.id.cerrarSesion:
+                Intent intent = new Intent(this, MainActivity.class);
+                this.startActivity(intent);
+                Toast.makeText(this, "Has finalizado tu sesión con éxito", Toast.LENGTH_LONG).show();
+                break;
+        }
+        return true;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        //Para no volver con el atras del celular
     }
 }

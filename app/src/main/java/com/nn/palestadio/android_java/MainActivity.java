@@ -151,4 +151,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    public void onBackPressed() {
+        //Para no volver con el atras del celular
+    }
 }
