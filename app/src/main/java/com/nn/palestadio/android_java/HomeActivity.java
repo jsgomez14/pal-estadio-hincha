@@ -13,13 +13,13 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Button floatingButton = (Button) findViewById(R.id.floatingButton);
+        /*Button floatingButton = (Button) findViewById(R.id.floatingButton);
         floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ScanTicketActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
     }
 }

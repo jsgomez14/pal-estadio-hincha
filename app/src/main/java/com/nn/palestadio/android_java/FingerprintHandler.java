@@ -8,6 +8,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,7 +29,6 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
     public void startAuth(FingerprintManager fingerprintManager, FingerprintManager.CryptoObject cryptoObject){
 
         CancellationSignal cancellationSignal = new CancellationSignal();
-
         fingerprintManager.authenticate(cryptoObject, cancellationSignal,0,this,null);
     }
 
@@ -65,6 +65,11 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
 
             secondaryLabel.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
             imageView.setImageResource(R.mipmap.action_done);
+
+            Intent intent = new Intent(context, HomeActivity.class);
+            context.startActivity(intent);
+
+
         }
     }
 }
