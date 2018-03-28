@@ -38,8 +38,7 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
         //Log.v("Result Format", result.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
         if(result.getBarcodeFormat().equals())
         Toast.makeText(this, result.getContents() + "Format: "+result.getBarcodeFormat(), Toast.LENGTH_SHORT).show();
-
-
+        
         // If you would like to resume scanning, call this method below:
         mScannerView.resumeCameraPreview(this);
     }
