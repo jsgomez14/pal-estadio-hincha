@@ -49,10 +49,15 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch(menuItem.getItemId()){
             case R.id.cerrarSesion:
-                Intent intent = new Intent(this, MainActivity.class);
-                this.startActivity(intent);
+                Intent intentMain = new Intent(this, MainActivity.class);
+                this.startActivity(intentMain);
                 Toast.makeText(this, "Has finalizado tu sesión con éxito", Toast.LENGTH_LONG).show();
                 break;
+            case R.id.ubicacion:
+                Intent intentMap = new Intent(this, MapsActivity.class);
+                this.startActivity(intentMap);
+                break;
+
         }
         return true;
     }
