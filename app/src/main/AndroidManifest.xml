@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nn.palestadio.android_java">
 
+    // Permission to use fingerprint
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    // Permission to use camera
     <uses-permission android:name="android.permission.CAMERA" />
+    // Permission to use NFC
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
