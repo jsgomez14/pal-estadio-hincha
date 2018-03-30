@@ -1,5 +1,6 @@
 package com.nn.palestadio.android_java;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
         super.onResume();
         mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
         mScannerView.startCamera();          // Start camera on resume
+        Toast.makeText(this, "¡Escanea el código de barras de tu boleta!", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -34,11 +36,13 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
     @Override
     public void handleResult(Result result) {
         // Do something with the result here
-        //Log.v("Result", result.getContents()); // Prints scan results
-        //Log.v("Result Format", result.getBarcodeFormat().getName()); // Prints the scan format (qrcode, pdf417 etc.)
-        Toast.makeText(this, result.getContents() + "Format: "+result.getBarcodeFormat(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "¡Escaneado!: "+ result.getContents(), Toast.LENGTH_SHORT).show();
+
+        Intent QRCode = new Intent(ScanTicketActivity.this, QRCodeGenerated.class);
+        QRCode.putExtra("EXTRA_BARCODE_SCANNED", result.getContents());
+        startActivity(QRCode);
 
         // If you would like to resume scanning, call this method below:
-        mScannerView.resumeCameraPreview(this);
+        //mScannerView.resumeCameraPreview(this);
     }
 }

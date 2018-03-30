@@ -54,5 +54,6 @@
         android:layout_gravity="end|bottom"
         android:layout_marginBottom="43dp"
         android:layout_marginEnd="40dp"
-        app:backgroundTint="@color/colorAccent" />
+        android:src="?android:attr/actionModeFindDrawable"
+        app:backgroundTint="@color/colorPrimaryDark" />
 </RelativeLayout>
