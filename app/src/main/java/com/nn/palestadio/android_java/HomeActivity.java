@@ -56,6 +56,17 @@ public class HomeActivity extends AppCompatActivity {
         handleIntent(getIntent());
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        /**
+         * This method gets called, when a new Intent gets associated with the current activity instance.
+         * Instead of creating a new activity, onNewIntent will be called. For more information have a look
+         * at the documentation.
+         *
+         * In our case this method gets called, when the user attaches a Tag to the device.
+         */
+        handleIntent(intent);
+    }
 
     private void handleIntent(Intent intent) {
         String action = intent.getAction();
