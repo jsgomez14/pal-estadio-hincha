@@ -1,6 +1,7 @@
 package com.nn.palestadio.android_java;
 
 import android.Manifest;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -41,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
@@ -114,10 +116,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentLocationmMarker.remove();
 
         }
-        LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
+        LatLng latLng = new LatLng(4.6452988, -74.0773773);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Current Location");
+        markerOptions.title("Estadio Nemésio Camacho El Campín");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         currentLocationmMarker = mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -133,8 +135,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnected(@Nullable Bundle bundle) {
 
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(100);
-        locationRequest.setFastestInterval(1000);
+        locationRequest.setInterval(500);
+        locationRequest.setFastestInterval(5000);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
 
