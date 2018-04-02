@@ -10,40 +10,58 @@
     <include layout="@layout/toolbar"
         android:id="@+id/toolbar" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="75dp"
-        android:layout_height="76dp"
-        android:layout_alignParentStart="true"
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cv"
         android:layout_below="@+id/toolbar"
-        android:layout_marginStart="29dp"
-        android:layout_marginTop="22dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_photo" />
+        android:layout_margin="10dp"
+        app:cardBackgroundColor="#CCffffff"
+        app:cardCornerRadius="10dp"
+        >
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/textView3"
-        android:layout_alignTop="@+id/imageView"
-        android:layout_marginTop="11dp"
-        android:text="Pepito Perez"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="102dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="15dp"
-        android:layout_toEndOf="@+id/imageView"
-        android:text="26 Años"
-        tools:layout_editor_absoluteX="102dp"
-        tools:layout_editor_absoluteY="61dp" />
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="75dp"
+                android:layout_height="76dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="29dp"
+                android:layout_marginTop="22dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@mipmap/ic_photo" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/textView3"
+                android:layout_alignTop="@+id/imageView"
+                android:layout_marginTop="11dp"
+                android:text="Pepito Perez"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="102dp" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="15dp"
+                android:layout_toEndOf="@+id/imageView"
+                android:text="26 Años"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="61dp" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -52,8 +70,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_gravity="end|bottom"
-        android:layout_marginBottom="43dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="41dp"
+        android:layout_marginEnd="41dp"
+        android:elevation="8dp"
         android:src="?android:attr/actionModeFindDrawable"
-        app:backgroundTint="@color/colorPrimaryDark" />
+        app:backgroundTint="@color/colorPrimaryDark"
+        app:fabSize="normal"
+        android:tint="#ffffff"
+        android:scaleType="center"
+    />
+
 </RelativeLayout>
