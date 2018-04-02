@@ -114,7 +114,7 @@ public class HomeActivity extends AppCompatActivity {
          * It's important, that the activity is in the foreground (resumed). Otherwise
          * an IllegalStateException is thrown.
          */
-        setupForegroundDispatch(this, mNfcAdapter);
+        if(mNfcAdapter != null) setupForegroundDispatch(this, mNfcAdapter);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class HomeActivity extends AppCompatActivity {
         /**
          * Call this before onPause, otherwise an IllegalArgumentException is thrown as well.
          */
-        stopForegroundDispatch(this, mNfcAdapter);
+        if(mNfcAdapter != null) stopForegroundDispatch(this, mNfcAdapter);
 
         super.onPause();
     }
