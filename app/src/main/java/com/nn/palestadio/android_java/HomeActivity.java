@@ -53,6 +53,10 @@ public class HomeActivity extends AppCompatActivity {
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
+        if(mNfcAdapter == null)
+        {
+            return;
+        }
         handleIntent(getIntent());
     }
 
@@ -65,6 +69,11 @@ public class HomeActivity extends AppCompatActivity {
          *
          * In our case this method gets called, when the user attaches a Tag to the device.
          */
+        if(mNfcAdapter == null)
+        {
+            return;
+        }
+
         handleIntent(intent);
     }
 
