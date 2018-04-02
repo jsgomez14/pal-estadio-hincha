@@ -4,25 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QRCodeGenerated">
+    tools:context=".QRCodeGenerated"
+    android:background="@drawable/bg">
 
-    <ImageView
-        android:id="@+id/QRViz"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="185dp"
-        app:srcCompat="@drawable/ic_launcher_background"
-        tools:layout_editor_absoluteX="125dp"
-        tools:layout_editor_absoluteY="248dp" />
+        android:id="@+id/cv"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="100dp"
+        app:cardBackgroundColor="#CCffffff"
+        app:cardCornerRadius="10dp"
+        >
 
-    <Button
-        android:id="@+id/boton_volver"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="177dp"
-        android:text="Volver" />
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="50dp">
+
+            <ImageView
+                android:id="@+id/QRViz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@drawable/ic_launcher_background"
+                tools:layout_editor_absoluteX="125dp"
+                tools:layout_editor_absoluteY="248dp" />
+
+            <Button
+                android:id="@+id/boton_volver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/QRViz"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:text="Volver"
+                android:background="@color/colorPrimaryDark"
+                android:textColor="#ffffff"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
 </RelativeLayout>
