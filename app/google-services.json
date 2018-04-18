@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "695900274181-elfs21lh2kda2ins9vqgoq64m1aua4ll.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nn.palestadio.android_java",
+            "certificate_hash": "73452fe4574386d61bcd8ceba36c291fcce443a3"
+          }
+        },
+        {
           "client_id": "695900274181-b33f6vls0n54ppjfjgva0s76acdup54e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

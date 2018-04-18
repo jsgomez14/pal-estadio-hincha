@@ -1,6 +1,7 @@
 package com.nn.palestadio.android_java;
 
 import android.content.Context;
+import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.Tag;
@@ -74,6 +75,9 @@ class NdefReaderTask extends AsyncTask<Tag, Void, String>
     @Override
     protected void onPostExecute(String result) {
         if (result != null) {
+            Intent toNFCActivity = new Intent(context,NFCActivity.class);
+            toNFCActivity.putExtra("EXTRA_NFC_SCANNED", result);
+            context.startActivity(toNFCActivity);
             Toast.makeText(context, "Read content: " + result, Toast.LENGTH_LONG).show();
            // mTextView.setText("Read content: " + result);
         }

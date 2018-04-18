@@ -11,14 +11,24 @@ import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -42,8 +52,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
    //private ImageView mFingerprintImage;
   // private TextView mSecondaryLabel;
 
-   private FingerprintManager fingerprintManager;
-   private KeyguardManager keyguardManager;
+    EditText editTextEmail, editTextPassword;
+    ProgressBar progressBar;
+
+    private FirebaseAuth mAuth;
+
+    private FingerprintManager fingerprintManager;
+    private KeyguardManager keyguardManager;
 
     private KeyStore keyStore;
     private Cipher cipher;
@@ -55,6 +70,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        editTextEmail = findViewById(R.id.editTextEmail);
+        editTextPassword = findViewById(R.id.editTextPassword);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
 
         findViewById(R.id.textViewSignup).setOnClickListener(this);
         findViewById(R.id.buttonLogin).setOnClickListener(this);
@@ -101,6 +122,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
+    }
+
+    private void userLogin() {
+        String email = editTextEmail.getText().toString().trim();
+        String password = editTextPassword.getText().toString().trim();
+
+        if(email.isEmpty())
+        {
+            editTextEmail.setError("Correo electrónico requerido ");
+            editTextEmail.requestFocus();
+            return;
+        }
+
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+        {
+            editTextEmail.setError("Por favor ingresa un correo válido");
+        }
+
+        if(password.isEmpty())
+        {
+            editTextPassword.setError("Contraseña requerida");
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        if(password.length() < 6)
+        {
+            editTextPassword.setError("Tu contraseña debe contener al menos 6 caracteres");
+            editTextPassword.requestFocus();
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                progressBar.setVisibility(View.GONE);
+                if(task.isSuccessful()){
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    //TODO Observar addFlags y agregarlo donde podría ser útil.
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    finish();
+                    startActivity(intent);
+                }else
+                {
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -169,9 +240,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, SignUpActivity.class));
                 break;
             case R.id.buttonLogin:
-                finish();
-                startActivity(new Intent(this, HomeActivity.class ));
+                userLogin();
                 break;
         }
     }
+
+
 }
