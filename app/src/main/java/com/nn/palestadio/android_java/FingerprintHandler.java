@@ -54,20 +54,20 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
 
     private void update(String s, boolean b) {
 
-        TextView secondaryLabel = (TextView) ((Activity)context).findViewById(R.id.secondaryLabel);
-        ImageView imageView = (ImageView) ((Activity)context).findViewById(R.id.fingerprintImage);
+       // TextView secondaryLabel = (TextView) ((Activity)context).findViewById(R.id.secondaryLabel);
+      //  ImageView imageView = (ImageView) ((Activity)context).findViewById(R.id.fingerprintImage);
 
-        secondaryLabel.setText(s);
+       // secondaryLabel.setText(s);
 
         if(b == false){
-            secondaryLabel.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+            //secondaryLabel.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
         } else {
 
-            secondaryLabel.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-            imageView.setImageResource(R.mipmap.action_done);
+            //secondaryLabel.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
+           // imageView.setImageResource(R.mipmap.action_done);
 
-            Intent intent = new Intent(context, HomeActivity.class);
-            context.startActivity(intent);
+            ((Activity) context).finish();
+            context.startActivity(new Intent(context, HomeActivity.class));
 
 
         }

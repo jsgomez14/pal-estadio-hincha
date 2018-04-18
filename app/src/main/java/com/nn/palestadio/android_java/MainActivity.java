@@ -14,6 +14,7 @@ import android.security.keystore.KeyProperties;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,11 +36,11 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-   private TextView mHeadingLabel;
-   private ImageView mFingerprintImage;
-   private TextView mSecondaryLabel;
+  // private TextView mHeadingLabel;
+   //private ImageView mFingerprintImage;
+  // private TextView mSecondaryLabel;
 
    private FingerprintManager fingerprintManager;
    private KeyguardManager keyguardManager;
@@ -55,8 +56,12 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
-        mFingerprintImage = (ImageView) findViewById(R.id.fingerprintImage);
-        mSecondaryLabel = (TextView) findViewById(R.id.secondaryLabel);
+        findViewById(R.id.textViewSignup).setOnClickListener(this);
+        findViewById(R.id.buttonLogin).setOnClickListener(this);
+
+
+        // mFingerprintImage = (ImageView) findViewById(R.id.fingerprintImage);
+        //mSecondaryLabel = (TextView) findViewById(R.id.secondaryLabel);
 
         // Check 1: Android version should be greate or equal to Marshmallow
         // Check 2: Device has Fingerprint Scanner
@@ -70,18 +75,18 @@ public class MainActivity extends AppCompatActivity {
             keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
 
             if(!fingerprintManager.isHardwareDetected()) {
-                mSecondaryLabel.setText("No se detecta el escáner dáctilar en el dispositivo.");
+                //mSecondaryLabel.setText("No se detecta el escáner dáctilar en el dispositivo.");
 
             } else if(ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                mSecondaryLabel.setText("No hay permisos para usar el escáner dáctilar.");
+              //  mSecondaryLabel.setText("No hay permisos para usar el escáner dáctilar.");
 
             } else if(!keyguardManager.isKeyguardSecure()) {
-                mSecondaryLabel.setText("Agrega un método para bloquer tu dispositivo en configuraciones.");
+              //  mSecondaryLabel.setText("Agrega un método para bloquer tu dispositivo en configuraciones.");
 
             } else if(!fingerprintManager.hasEnrolledFingerprints()) {
-                mSecondaryLabel.setText("Debe haber almenos una huella dáctilar para el uso de esta característica.");
+              //  mSecondaryLabel.setText("Debe haber almenos una huella dáctilar para el uso de esta característica.");
             } else {
-                mSecondaryLabel.setText("Coloque su dedo en el escáner para ingresar.");
+               // mSecondaryLabel.setText("Coloque su dedo en el escáner para ingresar.");
 
                 generateKey();
 
@@ -157,7 +162,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        //Para no volver con el atras del celular
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.textViewSignup:
+                finish();
+                startActivity(new Intent(this, SignUpActivity.class));
+                break;
+            case R.id.buttonLogin:
+                finish();
+                startActivity(new Intent(this, HomeActivity.class ));
+                break;
+        }
     }
 }

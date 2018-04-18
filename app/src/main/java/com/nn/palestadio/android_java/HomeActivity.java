@@ -157,7 +157,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * @param activity The corresponding {@link BaseActivity} requesting to stop the foreground dispatch.
+     * @param activity The corresponding {@link HomeActivity} requesting to stop the foreground dispatch.
      * @param adapter The {@link NfcAdapter} used for the foreground dispatch.
      * Took from: https://code.tutsplus.com/tutorials/reading-nfc-tags-with-android--mobile-17278
      */
@@ -184,11 +184,5 @@ public class HomeActivity extends AppCompatActivity {
 
         }
         return true;
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        //Para no volver con el atras del celular
     }
 }
