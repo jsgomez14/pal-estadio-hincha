@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -20,15 +21,19 @@ public class QRCodeGenerated extends AppCompatActivity {
     private ImageView QRviz;
     private Button botonVolver;
 
+    ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcode_generated);
 
-        QRviz = (ImageView) findViewById(R.id.QRViz);
+        progressBar = findViewById(R.id.progressbar);
+
+        QRviz = findViewById(R.id.QRViz);
         String bc = getIntent().getStringExtra("EXTRA_BARCODE_SCANNED");
-        botonVolver = (Button) findViewById(R.id.boton_volver);
+        botonVolver = findViewById(R.id.boton_volver);
 
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,9 +48,15 @@ public class QRCodeGenerated extends AppCompatActivity {
 
             QRviz.setImageBitmap(bitmap);
 
+            uploadQRToFireBase(bitmap);
+
         } catch (WriterException e) {
             e.printStackTrace();
         }
+    }
+
+    private void uploadQRToFireBase(Bitmap bitmap) {
+
     }
 
     public Bitmap TextToImageEncode(String Value) throws WriterException

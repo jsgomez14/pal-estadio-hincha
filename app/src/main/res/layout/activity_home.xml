@@ -38,25 +38,36 @@
                 app:srcCompat="@mipmap/ic_photo" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/textViewName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/textView3"
+                android:layout_alignStart="@+id/textViewCedula"
                 android:layout_alignTop="@+id/imageView"
-                android:layout_marginTop="11dp"
+                android:layout_marginTop="5dp"
                 android:text="Pepito Perez"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="102dp" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/textViewCedula"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView"
+                android:layout_below="@+id/textViewName"
                 android:layout_marginStart="14dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:layout_toEndOf="@+id/imageView"
-                android:text="26 Años"
+                android:text="CC: 1090497306"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="61dp" />
+            <TextView
+                android:id="@+id/textViewVerified"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewCedula"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@+id/imageView"
+                android:text="Verified"
                 tools:layout_editor_absoluteX="102dp"
                 tools:layout_editor_absoluteY="61dp" />
         </RelativeLayout>

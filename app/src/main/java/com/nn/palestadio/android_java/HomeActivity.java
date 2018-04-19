@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.support.design.widget.FloatingActionButton;
@@ -17,8 +18,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.nfc.NfcAdapter;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -27,6 +32,9 @@ public class HomeActivity extends AppCompatActivity {
     public static final String TAG = "NfcDemo";
 
     private Toolbar toolbar;
+    TextView textViewVerified, textViewName, textViewCedula;
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private NfcAdapter mNfcAdapter;
 
@@ -35,6 +43,11 @@ public class HomeActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        textViewName = findViewById(R.id.textViewName);
+        textViewVerified = findViewById(R.id.textViewVerified);
+        textViewCedula = findViewById(R.id.textViewCedula);
+        loadUserInformation();
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 0);
@@ -50,6 +63,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ScanTicketActivity.class);
                 startActivity(intent);
+                
             }
         });
 
@@ -60,6 +74,38 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
         handleIntent(getIntent());
+    }
+
+    private void loadUserInformation() {
+        if(user != null)
+        {
+            user.reload();
+            if(user.getDisplayName() != null)
+            {
+                textViewName.setText(user.getDisplayName());
+            }
+
+            if(user.isEmailVerified())
+            {
+                textViewVerified.setVisibility(View.GONE);
+
+            }else{
+                textViewVerified.setTextColor(Color.parseColor("#b20000"));
+                textViewVerified.setText("Correo electrónico no verificado");
+            }
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null)
+        {
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+        }
     }
 
     @Override
@@ -173,15 +219,15 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch(menuItem.getItemId()){
             case R.id.cerrarSesion:
-                Intent intentMain = new Intent(this, MainActivity.class);
-                this.startActivity(intentMain);
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                this.startActivity(new Intent(this, MainActivity.class));
                 Toast.makeText(this, "Has finalizado tu sesión con éxito", Toast.LENGTH_LONG).show();
                 break;
             case R.id.ubicacion:
                 Intent intentMap = new Intent(this, MapsActivity.class);
                 this.startActivity(intentMap);
                 break;
-
         }
         return true;
     }

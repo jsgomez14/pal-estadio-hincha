@@ -73,8 +73,8 @@
                     android:hint="Correo electrónico"
                     android:inputType="textEmailAddress"
                     android:paddingBottom="15dp"
-                    android:textColorHint="@color/colorPrimaryDark"
-                    android:textColor="@color/colorPrimaryDark"/>
+                    android:textColorHint="#777777"
+                    />
 
                 <EditText
                     android:id="@+id/editTextPassword"
@@ -84,8 +84,8 @@
                     android:hint="Contraseña"
                     android:inputType="textPassword"
                     android:paddingBottom="15dp"
-                    android:textColorHint="@color/colorPrimaryDark"
-                    android:shadowColor="@color/colorPrimaryDark"/>
+                    android:textColorHint="#777777"
+                    />
 
                 <Button
                     android:id="@+id/buttonLogin"

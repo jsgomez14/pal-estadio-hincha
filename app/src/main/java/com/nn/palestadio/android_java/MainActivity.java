@@ -161,11 +161,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onComplete(@NonNull Task<AuthResult> task) {
                 progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful()){
-                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                    //TODO Observar addFlags y agregarlo donde podría ser útil.
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     finish();
-                    startActivity(intent);
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
                 }else
                 {
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -230,6 +227,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             throw new RuntimeException("Failed to init Cipher", e);
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(mAuth.getCurrentUser() != null)
+        {
+            finish();
+            startActivity(new Intent(this, HomeActivity.class));
+        }
     }
 
     @Override
