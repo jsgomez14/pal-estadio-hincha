@@ -4,16 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nn.palestadio.android_java.HomeActivity"
+    tools:context=".NFCActivity"
     android:background="@drawable/bg">
-
-    <include layout="@layout/toolbar"
-        android:id="@+id/toolbar" />
-
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/cv"
         android:layout_below="@+id/toolbar"
         android:layout_margin="10dp"
@@ -38,55 +34,27 @@
                 app:srcCompat="@mipmap/ic_photo" />
 
             <TextView
-                android:id="@+id/textViewName"
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/textViewCedula"
+                android:layout_alignStart="@+id/textView3"
                 android:layout_alignTop="@+id/imageView"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="11dp"
+                android:text="Partido: "
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="102dp" />
 
             <TextView
-                android:id="@+id/textViewCedula"
+                android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textViewName"
+                android:layout_below="@+id/textView"
                 android:layout_marginStart="14dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_toEndOf="@+id/imageView"
-                android:text="Cédula: "
-                tools:layout_editor_absoluteX="102dp"
-                tools:layout_editor_absoluteY="61dp" />
-            <TextView
-                android:id="@+id/textViewVerified"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textViewCedula"
-                android:layout_marginStart="14dp"
-                android:layout_marginTop="10dp"
-                android:layout_toEndOf="@+id/imageView"
+                android:text="Bucaramanga vs Cúcuta"
                 tools:layout_editor_absoluteX="102dp"
                 tools:layout_editor_absoluteY="61dp" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="41dp"
-        android:layout_marginEnd="41dp"
-        android:elevation="8dp"
-        android:src="?android:attr/actionModeFindDrawable"
-        app:backgroundTint="@color/colorPrimaryDark"
-        app:fabSize="normal"
-        android:tint="#ffffff"
-        android:scaleType="center"
-    />
-
 </RelativeLayout>

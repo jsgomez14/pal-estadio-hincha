@@ -22,8 +22,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.nfc.NfcAdapter;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -34,7 +40,9 @@ public class HomeActivity extends AppCompatActivity {
     private Toolbar toolbar;
     TextView textViewVerified, textViewName, textViewCedula;
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseUser user;
+    DatabaseReference myRef;
+
 
     private NfcAdapter mNfcAdapter;
 
@@ -47,6 +55,8 @@ public class HomeActivity extends AppCompatActivity {
         textViewName = findViewById(R.id.textViewName);
         textViewVerified = findViewById(R.id.textViewVerified);
         textViewCedula = findViewById(R.id.textViewCedula);
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        myRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
         loadUserInformation();
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -79,7 +89,17 @@ public class HomeActivity extends AppCompatActivity {
     private void loadUserInformation() {
         if(user != null)
         {
-            user.reload();
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    showData(dataSnapshot);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
             if(user.getDisplayName() != null)
             {
                 textViewName.setText(user.getDisplayName());
@@ -91,16 +111,22 @@ public class HomeActivity extends AppCompatActivity {
 
             }else{
                 textViewVerified.setTextColor(Color.parseColor("#b20000"));
-                textViewVerified.setText("Correo electrónico no verificado");
+                textViewVerified.setText("Verifica tu correo para acceder al resto de funcionalidades.");
             }
         }
+    }
+
+    private void showData(DataSnapshot dataSnapshot) {
+        UserInformation userInfo = new UserInformation();
+        userInfo.setCedula(dataSnapshot.getValue(UserInformation.class).getCedula());
+        textViewCedula.setText("Cédula: "+userInfo.getCedula());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        user.reload();
         if(user == null)
         {
             finish();

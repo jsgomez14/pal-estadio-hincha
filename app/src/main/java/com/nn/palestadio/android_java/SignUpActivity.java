@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -27,6 +29,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     String name;
 
     private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +47,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.buttonRegister).setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
     private void registerUser() {
         String email = editTextEmail.getText().toString().trim();
         name = editTextName.getText().toString().trim();
-        String cedula = editTextName.getText().toString().trim();
+        String cedula = editTextId.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
 
@@ -63,15 +67,21 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches())
         {
             editTextEmail.setError("Por favor ingresa un correo válido");
+            editTextEmail.requestFocus();
+            return;
         }
 
         if(name.isEmpty()){
             editTextName.setError("Por favor ingresa nombre completo");
+            editTextName.requestFocus();
+            return;
         }
 
         if(cedula.isEmpty())
         {
             editTextId.setError("Por favor ingresa la cédula de ciudadania");
+            editTextId.requestFocus();
+            return;
         }
 
         if(password.isEmpty())
@@ -106,6 +116,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+
+
     private void updateUserInfo() {
         final FirebaseUser user = mAuth.getCurrentUser();
         if(user != null)
@@ -117,8 +129,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             user.updateProfile(profile).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    progressBar.setVisibility(View.GONE);
                     if(task.isSuccessful()){
+                        updateUserCedula();
                         verificationEmail(user);
                         finish();
                         startActivity(new Intent(SignUpActivity.this, HomeActivity.class));                        }
@@ -128,6 +140,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 }
             });
         }
+    }
+
+    private void updateUserCedula() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        String cedula = editTextId.getText().toString().trim();
+        UserInformation userInformation = new UserInformation(cedula);
+        databaseReference.child("users").child(user.getUid()).setValue(userInformation);
     }
 
     private void verificationEmail(FirebaseUser user) {
