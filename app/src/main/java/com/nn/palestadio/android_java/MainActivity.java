@@ -9,19 +9,25 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -262,14 +268,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.textViewSignup:
-                finish();
-                startActivity(new Intent(this, SignUpActivity.class));
+                if (verificarConexion()) {
+                    finish();
+                    startActivity(new Intent(this, SignUpActivity.class));
+                } else {
+                    setSnackBar(findViewById(R.id.buttonLogin), "Para esto necesitas conexión a internet.");
+                }
                 break;
             case R.id.buttonLogin:
-                userLogin();
+                if (verificarConexion()) userLogin();
+                else
+                    setSnackBar(findViewById(R.id.buttonLogin), "Para esto necesitas conexión a internet.");
                 break;
         }
     }
 
+    private void setSnackBar(final View coordinatorLayout, String snackTitle) {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, snackTitle, Snackbar.LENGTH_SHORT);
+        snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            @Override
+            public void onShown(Snackbar transientBottomBar) {
+                float heightSnack = transientBottomBar.getView().getHeight();
+                super.onShown(transientBottomBar);
+            }
+
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                super.onDismissed(transientBottomBar, event);
+            }
+        });
+        snackbar.show();
+        View view = snackbar.getView();
+        TextView txtv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+        txtv.setGravity(Gravity.CENTER_HORIZONTAL);
+
+    }
+
+
+    public boolean verificarConexion() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting())
+            return true;
+        else
+            return false;
+
+    }
 
 }

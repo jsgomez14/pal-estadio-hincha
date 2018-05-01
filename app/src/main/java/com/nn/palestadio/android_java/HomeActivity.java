@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -32,6 +33,7 @@ import android.nfc.NfcAdapter;
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -49,6 +51,11 @@ public class HomeActivity extends AppCompatActivity {
     TextView textViewVerified, textViewName, textViewCedula;
     FloatingActionButton floatingButton;
 
+    private final static String PREF_NAME = "prefs";
+    private final static String KEY_CEDULA = "cedula";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
     FirebaseUser user;
     DatabaseReference myRef;
 
@@ -59,6 +66,9 @@ public class HomeActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
 
         textViewName = findViewById(R.id.textViewName);
         textViewVerified = findViewById(R.id.textViewVerified);
@@ -80,8 +90,12 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(verificarConexion()){
-                    Intent intent = new Intent(HomeActivity.this, ScanTicketActivity.class);
-                    startActivity(intent);
+                    if (user.isEmailVerified()) {
+                        Intent intent = new Intent(HomeActivity.this, ScanTicketActivity.class);
+                        startActivity(intent);
+                    } else {
+                        setSnackBar(findViewById(R.id.layoutHome), "Para esto requieres verificación de correo.");
+                    }
                 } else {
                     setSnackBar(findViewById(R.id.layoutHome),"Para registrar una boleta requieres de conexión a internet.");
                 }
@@ -116,7 +130,9 @@ public class HomeActivity extends AppCompatActivity {
             {
                 textViewName.setText(user.getDisplayName());
             }
-
+            if (!verificarConexion()) {
+                textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
+            }
             if(user.isEmailVerified())
             {
                 textViewVerified.setVisibility(View.GONE);
@@ -132,6 +148,8 @@ public class HomeActivity extends AppCompatActivity {
         UserInformation userInfo = new UserInformation();
         userInfo.setCedula(dataSnapshot.getValue(UserInformation.class).getCedula());
         textViewCedula.setText("Cédula: "+userInfo.getCedula());
+        editor.putString(KEY_CEDULA, "Cédula: " + userInfo.getCedula());
+        editor.apply();
     }
 
     @Override
@@ -269,7 +287,6 @@ public class HomeActivity extends AppCompatActivity {
                 } else {
                     setSnackBar(findViewById(R.id.fab),"Para ver como llegar al estadio requieres de conexión a internet.");
                 }
-
                 break;
         }
         return true;
@@ -307,6 +324,5 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         else
             return false;
-
     }
 }
