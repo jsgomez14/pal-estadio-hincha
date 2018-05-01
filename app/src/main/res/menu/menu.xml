@@ -4,7 +4,7 @@
 
 
     <item
-        android:title="Ver ubicación"
+        android:title="Ir al estadio"
         android:id="@+id/ubicacion"
         app:showAsAction="never"
         />

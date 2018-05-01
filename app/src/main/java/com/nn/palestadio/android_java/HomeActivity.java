@@ -2,19 +2,26 @@ package com.nn.palestadio.android_java;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,12 +44,13 @@ public class HomeActivity extends AppCompatActivity {
     public static final String MIME_TEXT_PLAIN = "text/plain";
     public static final String TAG = "NfcDemo";
 
+    private float heightFab;
     private Toolbar toolbar;
     TextView textViewVerified, textViewName, textViewCedula;
+    FloatingActionButton floatingButton;
 
     FirebaseUser user;
     DatabaseReference myRef;
-
 
     private NfcAdapter mNfcAdapter;
 
@@ -67,12 +75,16 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        FloatingActionButton floatingButton = (FloatingActionButton) findViewById(R.id.fab);
+        floatingButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, ScanTicketActivity.class);
-                startActivity(intent);
+                if(verificarConexion()){
+                    Intent intent = new Intent(HomeActivity.this, ScanTicketActivity.class);
+                    startActivity(intent);
+                } else {
+                    setSnackBar(findViewById(R.id.layoutHome),"Para registrar una boleta requieres de conexión a internet.");
+                }
                 
             }
         });
@@ -251,10 +263,50 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(this, "Has finalizado tu sesión con éxito", Toast.LENGTH_LONG).show();
                 break;
             case R.id.ubicacion:
-                Intent intentMap = new Intent(this, MapsActivity.class);
-                this.startActivity(intentMap);
+                if(verificarConexion()) {
+                    Intent intentMap = new Intent(this, MapsActivity.class);
+                    this.startActivity(intentMap);
+                } else {
+                    setSnackBar(findViewById(R.id.fab),"Para ver como llegar al estadio requieres de conexión a internet.");
+                }
+
                 break;
         }
         return true;
+    }
+
+    public void setSnackBar(View coordinatorLayout, String snackTitle) {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, snackTitle, Snackbar.LENGTH_SHORT);
+        snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            @Override
+            public void onShown(Snackbar transientBottomBar) {
+                float heightSnack = transientBottomBar.getView().getHeight();
+                heightFab = floatingButton.getY();
+                floatingButton.setY(heightFab-heightSnack);
+                super.onShown(transientBottomBar);
+            }
+
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                floatingButton.setY(heightFab);
+
+                super.onDismissed(transientBottomBar, event);
+            }
+        });
+        snackbar.show();
+        View view = snackbar.getView();
+        TextView txtv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+        txtv.setGravity(Gravity.CENTER_HORIZONTAL);
+
+    }
+
+    public boolean verificarConexion() {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if(netInfo != null && netInfo.isConnectedOrConnecting())
+            return true;
+        else
+            return false;
+
     }
 }

@@ -39,12 +39,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
+import com.newrelic.agent.android.NewRelic;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -79,6 +83,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.textViewSignup).setOnClickListener(this);
         findViewById(R.id.buttonLogin).setOnClickListener(this);
+
+        NewRelic.withApplicationToken(
+                "AAd9858f51324526bdfa53064d383c5eea0e29d50b"
+        ).start(this.getApplication());
 
 
         // mFingerprintImage = (ImageView) findViewById(R.id.fingerprintImage);
