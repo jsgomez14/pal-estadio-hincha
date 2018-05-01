@@ -4,13 +4,21 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+
+import android.content.SharedPreferences;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.util.Patterns;
+
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Created by Diego Zucchet on 20/03/2018.
@@ -20,10 +28,20 @@ import android.widget.TextView;
 public class FingerprintHandler extends FingerprintManager.AuthenticationCallback {
 
     private Context context;
+    private FirebaseAuth mAuth;
+
+    private final static String PREF_NAME= "prefs";
+    private final static String KEY_EMAIL= "email";
+    private static final String KEY_PASS = "password";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
 
     public FingerprintHandler(Context context){
-
+        mAuth = FirebaseAuth.getInstance();
         this.context = context;
+        sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
     }
 
     public void startAuth(FingerprintManager fingerprintManager, FingerprintManager.CryptoObject cryptoObject){
@@ -49,8 +67,37 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
 
     @Override
     public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-        this.update("Ya puedes acceder a la aplicación", true);
+        super.onAuthenticationSucceeded(result);
+        String email = sharedPreferences.getString(KEY_EMAIL, "");
+        String password = sharedPreferences.getString(KEY_PASS, "");
+        Log.d("EMAIL: ", email);
+        Log.d("PASS: ", password);
+
+        userLogin(email, password);
     }
+
+    private void userLogin(String email, String password) {
+        if(email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches() || password.isEmpty() || password.length() < 6)
+        {
+            Toast.makeText(context, "Error autenticación con huella, prueba con tu correo y contraseña", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else
+        {
+            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+                        context.startActivity(new Intent(context, HomeActivity.class));
+                    }else
+                    {
+                        Toast.makeText(context, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
 
     private void update(String s, boolean b) {
 

@@ -3,7 +3,9 @@ package com.nn.palestadio.android_java;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.KeyguardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
@@ -19,9 +21,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -52,9 +52,7 @@ import com.newrelic.agent.android.NewRelic;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-  // private TextView mHeadingLabel;
-   //private ImageView mFingerprintImage;
-  // private TextView mSecondaryLabel;
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     EditText editTextEmail, editTextPassword;
     ProgressBar progressBar;
@@ -63,10 +61,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;
-
     private KeyStore keyStore;
     private Cipher cipher;
+
+    private FingerprintManager.CryptoObject cryptoObject;
+    private FingerprintHandler fingerprintHandler;
+
+
     private String KEY_NAME = "AndroidKey";
+
+    private final static String PREF_NAME= "prefs";
+    private final static String KEY_EMAIL= "email";
+    private static final String KEY_PASS = "password";
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
 
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
@@ -115,8 +126,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if(!fingerprintManager.hasEnrolledFingerprints()) {
               //  mSecondaryLabel.setText("Debe haber almenos una huella dáctilar para el uso de esta característica.");
             } else {
-               // mSecondaryLabel.setText("Coloque su dedo en el escáner para ingresar.");
-
                 generateKey();
 
                 if (cipherInit()){
@@ -124,8 +133,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     FingerprintManager.CryptoObject cryptoObject = new FingerprintManager.CryptoObject(cipher);
                     FingerprintHandler fingerprintHandler = new FingerprintHandler(this);
                     fingerprintHandler.startAuth(fingerprintManager, cryptoObject);
-
-
                 }
             }
         }
@@ -169,6 +176,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onComplete(@NonNull Task<AuthResult> task) {
                 progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful()){
+                    editor.putString(KEY_EMAIL, editTextEmail.getText().toString().trim());
+                    editor.putString(KEY_PASS, editTextPassword.getText().toString().trim());
+                    editor.apply();
                     finish();
                     startActivity(new Intent(MainActivity.this, HomeActivity.class));
                 }else

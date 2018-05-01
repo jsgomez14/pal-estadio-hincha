@@ -1,9 +1,9 @@
 package com.nn.palestadio.android_java;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -28,6 +28,16 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     EditText editTextEmail, editTextName, editTextId, editTextPassword;
     String name;
 
+    private final static String PREF_NAME= "prefs";
+    private final static String KEY_EMAIL= "email";
+    private static final String KEY_PASS = "password";
+    private static final String KEY_CEDULA = "cedula";
+
+
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
 
@@ -41,6 +51,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         editTextId = findViewById(R.id.editTextId);
         editTextPassword = findViewById(R.id.editTextPassword);
 
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
         progressBar = findViewById(R.id.progressbar);
 
         findViewById(R.id.textViewSignin).setOnClickListener(this);
@@ -51,7 +64,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void registerUser() {
-        String email = editTextEmail.getText().toString().trim();
+        final String email = editTextEmail.getText().toString().trim();
         name = editTextName.getText().toString().trim();
         String cedula = editTextId.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
@@ -108,6 +121,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 {
                     editTextEmail.setError("El correo electrónico ya está registrado.");
                     editTextEmail.requestFocus();
+                    return;
                 }
                 updateUserInfo();
             }
@@ -131,6 +145,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
                         updateUserCedula();
+                        editor.putString(KEY_EMAIL, editTextEmail.getText().toString().trim());
+                        editor.putString(KEY_PASS, editTextPassword.getText().toString().trim());
+                        editor.putString(KEY_CEDULA, editTextId.getText().toString().trim());
+                        editor.apply();
                         verificationEmail(user);
                         finish();
                         startActivity(new Intent(SignUpActivity.this, HomeActivity.class));                        }
