@@ -10,7 +10,6 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Patterns;
 
 import android.widget.Toast;
@@ -70,8 +69,6 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
         super.onAuthenticationSucceeded(result);
         String email = sharedPreferences.getString(KEY_EMAIL, "");
         String password = sharedPreferences.getString(KEY_PASS, "");
-        Log.d("EMAIL: ", email);
-        Log.d("PASS: ", password);
 
         userLogin(email, password);
     }
@@ -80,7 +77,6 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
         if(email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches() || password.isEmpty() || password.length() < 6)
         {
             Toast.makeText(context, "Error autenticación con huella, prueba con tu correo y contraseña", Toast.LENGTH_SHORT).show();
-            return;
         }
         else
         {

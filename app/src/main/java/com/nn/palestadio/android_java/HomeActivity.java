@@ -14,7 +14,6 @@ import android.net.NetworkInfo;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.support.design.widget.BaseTransientBottomBar;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -30,10 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.nfc.NfcAdapter;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -115,23 +112,29 @@ public class HomeActivity extends AppCompatActivity {
     private void loadUserInformation() {
         if(user != null)
         {
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    showData(dataSnapshot);
-                }
+            if (!sharedPreferences.getString(KEY_CEDULA, "").isEmpty()) {
+                textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
+            } else {
+                if (!verificarConexion()) {
+                    textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
+                } else {
+                    myRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            showData(dataSnapshot);
+                        }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
+                        }
+                    });
                 }
-            });
+            }
+
             if(user.getDisplayName() != null)
             {
                 textViewName.setText(user.getDisplayName());
-            }
-            if (!verificarConexion()) {
-                textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
             }
             if(user.isEmailVerified())
             {
