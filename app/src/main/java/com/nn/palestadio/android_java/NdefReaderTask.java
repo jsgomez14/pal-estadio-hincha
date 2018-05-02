@@ -78,7 +78,6 @@ class NdefReaderTask extends AsyncTask<Tag, Void, String>
             Intent toNFCActivity = new Intent(context,NFCActivity.class);
             toNFCActivity.putExtra("EXTRA_NFC_SCANNED", result);
             context.startActivity(toNFCActivity);
-            Toast.makeText(context, "Read content: " + result, Toast.LENGTH_LONG).show();
            // mTextView.setText("Read content: " + result);
         }
     }

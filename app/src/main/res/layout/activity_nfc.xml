@@ -12,7 +12,10 @@
         android:layout_height="match_parent"
         android:id="@+id/cv"
         android:layout_below="@+id/toolbar"
-        android:layout_margin="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="170dp"
+        android:layout_marginTop="70dp"
         app:cardBackgroundColor="#CCffffff"
         app:cardCornerRadius="10dp"
         >
@@ -22,30 +25,21 @@
             android:layout_height="match_parent"
             android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="75dp"
-                android:layout_height="76dp"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="29dp"
-                android:layout_marginTop="22dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@mipmap/ic_photo" />
-
             <TextView
+                android:textStyle="bold"
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/textView3"
                 android:layout_alignTop="@+id/imageView"
-                android:layout_marginTop="11dp"
+                android:layout_marginTop="40dp"
                 android:text="Partido: "
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="102dp" />
 
             <TextView
                 android:id="@+id/textView3"
+                android:textStyle="italic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView"
@@ -53,6 +47,48 @@
                 android:layout_marginTop="15dp"
                 android:layout_toEndOf="@+id/imageView"
                 android:text="Bucaramanga vs Cúcuta"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="61dp" />
+
+            <TextView
+                android:textStyle="bold"
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView3"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="15dp"
+                android:layout_toEndOf="@+id/imageView"
+                android:text="Horario:"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="61dp" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:textStyle="italic"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView4"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="15dp"
+                android:layout_toEndOf="@+id/imageView"
+                android:text="2pm"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="61dp" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:textStyle="italic|bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="15dp"
+                android:layout_alignParentBottom="true"
+                android:text="Recuerda que los siguientes elementos no
+se permiten ingresar al estadio:
+
+Armas de fuego, armas blancas, cinturones.
+Disfruta del juego EN PAZ!"
                 tools:layout_editor_absoluteX="102dp"
                 tools:layout_editor_absoluteY="61dp" />
         </RelativeLayout>
