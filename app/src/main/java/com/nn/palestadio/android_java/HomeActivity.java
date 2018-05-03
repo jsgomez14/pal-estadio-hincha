@@ -193,7 +193,7 @@ public class HomeActivity extends AppCompatActivity {
                             if(task.getResult().isEmpty()){
                             } else {
                                 for (DocumentSnapshot document : task.getResult()) {
-                                    
+
                                     String[] array = document.getData().toString().split(",");
 
                                     //Asiento
