@@ -48,8 +48,7 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
 
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         getWindow().setBackgroundDrawable(null);
-        String [] prueba = sharedPreferences.getString(KEY_CEDULA,"").split(":");
-        cedula = prueba[1].trim();
+        cedula = sharedPreferences.getString(KEY_CEDULA, "");
 
         Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "¡Escanea el código de barras de tu boleta!", Snackbar.LENGTH_SHORT);
         snackbar.show();
