@@ -38,6 +38,7 @@ public class QRCodeGenerated extends AppCompatActivity {
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();
                 Intent intent = new Intent(QRCodeGenerated.this, HomeActivity.class);
                 startActivity(intent);
             }

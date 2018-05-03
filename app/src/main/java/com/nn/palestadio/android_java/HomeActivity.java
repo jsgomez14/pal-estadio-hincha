@@ -138,13 +138,12 @@ public class HomeActivity extends AppCompatActivity {
         if(user != null)
         {
             if (!sharedPreferences.getString(KEY_CEDULA, "").isEmpty()) {
-                textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
-                String [] prueba = sharedPreferences.getString(KEY_CEDULA,"").split(":");
-                String cedula = prueba[1].trim();
-                crearBoletas();
+                textViewCedula.setText("Cédula: " + sharedPreferences.getString(KEY_CEDULA, ""));
+                String cedula = sharedPreferences.getString(KEY_CEDULA, "");
+                crearBoletas(cedula);
             } else {
                 if (!verificarConexion()) {
-                    textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
+                    textViewCedula.setText("Cédula: " + sharedPreferences.getString(KEY_CEDULA, ""));
                 } else {
                     myRef.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -178,10 +177,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void crearBoletas() {
-
-        textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
-        String cedula = sharedPreferences.getString(KEY_CEDULA, "");
+    public void crearBoletas(String cedula) {
         db.collection("boleteria")
                 .whereEqualTo("cedula",cedula)
                 .get()
@@ -226,8 +222,8 @@ public class HomeActivity extends AppCompatActivity {
     private void showData(DataSnapshot dataSnapshot) {
         userInfo.setCedula(dataSnapshot.getValue(UserInformation.class).getCedula());
         textViewCedula.setText("Cédula: "+userInfo.getCedula());
-        crearBoletas();
-        editor.putString(KEY_CEDULA, "Cédula: " + userInfo.getCedula());
+        crearBoletas(userInfo.getCedula());
+        editor.putString(KEY_CEDULA, userInfo.getCedula());
         editor.apply();
 
     }
