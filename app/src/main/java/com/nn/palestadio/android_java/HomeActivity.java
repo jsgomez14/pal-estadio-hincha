@@ -181,8 +181,7 @@ public class HomeActivity extends AppCompatActivity {
     public void crearBoletas() {
 
         textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
-        String [] prueba = sharedPreferences.getString(KEY_CEDULA,"").split(":");
-        String cedula = prueba[1].trim();
+        String cedula = sharedPreferences.getString(KEY_CEDULA, "");
         db.collection("boleteria")
                 .whereEqualTo("cedula",cedula)
                 .get()
