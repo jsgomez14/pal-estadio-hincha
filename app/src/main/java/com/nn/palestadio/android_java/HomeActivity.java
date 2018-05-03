@@ -13,22 +13,28 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.nfc.NfcAdapter;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +42,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -48,6 +60,8 @@ public class HomeActivity extends AppCompatActivity {
     private Toolbar toolbar;
     TextView textViewVerified, textViewName, textViewCedula;
     FloatingActionButton floatingButton;
+    private static ProgressBar progressBar;
+
 
     private final static String PREF_NAME = "prefs";
     private final static String KEY_CEDULA = "cedula";
@@ -56,21 +70,29 @@ public class HomeActivity extends AppCompatActivity {
 
     FirebaseUser user;
     DatabaseReference myRef;
+    UserInformation userInfo;
 
     private NfcAdapter mNfcAdapter;
+
+    private FirebaseFirestore db;
+    private static ArrayList<MatchInformation> boletas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        userInfo = new UserInformation();
 
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        db = FirebaseFirestore.getInstance();
+        boletas = new ArrayList<>();
 
         textViewName = findViewById(R.id.textViewName);
         textViewVerified = findViewById(R.id.textViewVerified);
         textViewCedula = findViewById(R.id.textViewCedula);
+        progressBar = (ProgressBar) findViewById(R.id.progressBarBoleta);
         user = FirebaseAuth.getInstance().getCurrentUser();
         myRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
         loadUserInformation();
@@ -101,6 +123,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         if(mNfcAdapter == null)
@@ -108,6 +131,7 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
         handleIntent(getIntent());
+
     }
 
     private void loadUserInformation() {
@@ -115,6 +139,9 @@ public class HomeActivity extends AppCompatActivity {
         {
             if (!sharedPreferences.getString(KEY_CEDULA, "").isEmpty()) {
                 textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
+                String [] prueba = sharedPreferences.getString(KEY_CEDULA,"").split(":");
+                String cedula = prueba[1].trim();
+                crearBoletas();
             } else {
                 if (!verificarConexion()) {
                     textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
@@ -145,15 +172,85 @@ public class HomeActivity extends AppCompatActivity {
                 textViewVerified.setTextColor(Color.parseColor("#b20000"));
                 textViewVerified.setText("Verifica tu correo para acceder al resto de funcionalidades.");
             }
+
+
         }
+
+    }
+
+    public void crearBoletas() {
+
+        textViewCedula.setText(sharedPreferences.getString(KEY_CEDULA, ""));
+        String [] prueba = sharedPreferences.getString(KEY_CEDULA,"").split(":");
+        String cedula = prueba[1].trim();
+        db.collection("boleteria")
+                .whereEqualTo("cedula",cedula)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().isEmpty()){
+                            } else {
+                                for (DocumentSnapshot document : task.getResult()) {
+                                    
+                                    String[] array = document.getData().toString().split(",");
+
+                                    //Asiento
+                                    String[] asiento = array[5].split("=");
+
+                                    //Equipo1
+                                    String[] equipo1 = array[6].split("=");
+                                    //Equipo2
+                                    String[] equipo2 = array[0].split("=");
+                                    //Fecha
+                                    String[] fecha = array[8].split("=");
+                                    //Hora
+                                    String[] hora = array[1].split("=");
+                                    //Tribuna
+                                    String[] tribuna = array[4].split("=");
+
+                                    MatchInformation boleta = new MatchInformation(asiento[1],equipo1[1],equipo2[1],fecha[1].substring(0,10),hora[1],tribuna[1],document.getData().toString());
+                                    boletas.add(boleta);
+                                    initRecyclerView();
+                                }
+                            }
+
+                        } else {
+                            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Existen problemas con la base de datos", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        }
+                    }
+                });
     }
 
     private void showData(DataSnapshot dataSnapshot) {
-        UserInformation userInfo = new UserInformation();
         userInfo.setCedula(dataSnapshot.getValue(UserInformation.class).getCedula());
         textViewCedula.setText("Cédula: "+userInfo.getCedula());
+        crearBoletas();
         editor.putString(KEY_CEDULA, "Cédula: " + userInfo.getCedula());
         editor.apply();
+
+    }
+
+    private void initRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(layoutManager);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, boletas);
+        recyclerView.setAdapter(adapter);
+    }
+
+    public static void createQR(Context context, int position){
+        progressBar.setVisibility(View.VISIBLE);
+        Intent QRCode = new Intent(context, QRCodeGenerated.class);
+        QRCode.putExtra("EXTRA_BARCODE_SCANNED", boletas.get(position).getInfo());
+        context.startActivity(QRCode);
+
+    }
+
+    public static void stopProgressBar() {
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

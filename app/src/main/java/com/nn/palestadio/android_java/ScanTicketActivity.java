@@ -48,7 +48,6 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
 
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         getWindow().setBackgroundDrawable(null);
-        Log.v("XDD", sharedPreferences.getString(KEY_CEDULA,""));
         String [] prueba = sharedPreferences.getString(KEY_CEDULA,"").split(":");
         cedula = prueba[1].trim();
 
@@ -87,14 +86,23 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
                                 onResume();
                             } else {
                                 for (DocumentSnapshot document : task.getResult()) {
-                                    Log.v("FUNCIONA", document.getId() + " => " + document.getData());
 
-
-                                    DocumentReference boleta = db.collection("boleteria").document(document.getId());
-                                    boleta.update("cedula",cedula);
-                                    Intent QRCode = new Intent(ScanTicketActivity.this, QRCodeGenerated.class);
-                                    QRCode.putExtra("EXTRA_BARCODE_SCANNED", value);
-                                    startActivity(QRCode);
+                                    String[] array = document.getData().toString().split(",");
+                                    //Cedula actual
+                                    String[] ced = array[7].split("=");
+                                    if(!ced[1].equals("-1")) {
+                                        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Lo sentimos, esa boleta ya fue registrada", Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
+                                        Intent HomeActivity = new Intent(ScanTicketActivity.this, HomeActivity.class);
+                                        startActivity(HomeActivity);
+                                    } else {
+                                        DocumentReference boleta = db.collection("boleteria").document(document.getId());
+                                        boleta.update("cedula",cedula);
+                                        Intent HomeActivity = new Intent(ScanTicketActivity.this, HomeActivity.class);
+                                        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Se ha creado la boleta con éxito", Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
+                                        startActivity(HomeActivity);
+                                    }
                                 }
                             }
 

@@ -94,4 +94,11 @@ public class QRCodeGenerated extends AppCompatActivity {
         bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight);
         return bitmap;
     }
+
+    public void onBackPressed() {
+        // do something on back.
+        HomeActivity.stopProgressBar();
+        finish();
+        return;
+    }
 }
