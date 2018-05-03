@@ -1,15 +1,23 @@
 package com.nn.palestadio.android_java;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -23,6 +31,12 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
     private ZBarScannerView mScannerView;
     private FirebaseFirestore db;
     private String value;
+    private String cedula;
+
+    private final static String KEY_CEDULA = "cedula";
+    private final static String PREF_NAME = "prefs";
+
+    SharedPreferences sharedPreferences;
 
 
     @Override
@@ -32,7 +46,11 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
         db = FirebaseFirestore.getInstance();
         setContentView(mScannerView);
 
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         getWindow().setBackgroundDrawable(null);
+        Log.v("XDD", sharedPreferences.getString(KEY_CEDULA,""));
+        String [] prueba = sharedPreferences.getString(KEY_CEDULA,"").split(":");
+        cedula = prueba[1].trim();
 
         Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "¡Escanea el código de barras de tu boleta!", Snackbar.LENGTH_SHORT);
         snackbar.show();
@@ -70,6 +88,10 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
                             } else {
                                 for (DocumentSnapshot document : task.getResult()) {
                                     Log.v("FUNCIONA", document.getId() + " => " + document.getData());
+
+
+                                    DocumentReference boleta = db.collection("boleteria").document(document.getId());
+                                    boleta.update("cedula",cedula);
                                     Intent QRCode = new Intent(ScanTicketActivity.this, QRCodeGenerated.class);
                                     QRCode.putExtra("EXTRA_BARCODE_SCANNED", value);
                                     startActivity(QRCode);

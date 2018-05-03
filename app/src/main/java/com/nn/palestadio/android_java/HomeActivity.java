@@ -43,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
     public static final String MIME_TEXT_PLAIN = "text/plain";
     public static final String TAG = "NfcDemo";
 
+
     private float heightFab;
     private Toolbar toolbar;
     TextView textViewVerified, textViewName, textViewCedula;
@@ -281,7 +282,8 @@ public class HomeActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 finish();
                 this.startActivity(new Intent(this, MainActivity.class));
-                Toast.makeText(this, "Has finalizado tu sesión con éxito", Toast.LENGTH_LONG).show();
+                setSnackBar(findViewById(R.id.fab),"Has finalizado tu sesión con éxito");
+
                 break;
             case R.id.ubicacion:
                 if(verificarConexion()) {
