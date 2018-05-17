@@ -32,6 +32,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private final static String KEY_EMAIL= "email";
     private static final String KEY_PASS = "password";
     private static final String KEY_CEDULA = "cedula";
+    private static final String KEY_USERUID = "useruid";
 
 
 
@@ -148,6 +149,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         editor.putString(KEY_EMAIL, editTextEmail.getText().toString().trim());
                         editor.putString(KEY_PASS, editTextPassword.getText().toString().trim());
                         editor.putString(KEY_CEDULA, editTextId.getText().toString().trim());
+                        editor.putString(KEY_USERUID, user.getUid().trim());
                         editor.apply();
                         verificationEmail(user);
                         finish();

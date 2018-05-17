@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final static String PREF_NAME= "prefs";
     private final static String KEY_EMAIL= "email";
     private static final String KEY_PASS = "password";
+    private static final String KEY_USERUID = "useruid";
+
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 

@@ -65,6 +65,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private final static String PREF_NAME = "prefs";
     private final static String KEY_CEDULA = "cedula";
+    private static final String KEY_USERUID = "useruid";
+
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
@@ -137,7 +139,8 @@ public class HomeActivity extends AppCompatActivity {
     private void loadUserInformation() {
         if(user != null)
         {
-            if (!sharedPreferences.getString(KEY_CEDULA, "").isEmpty()) {
+            String uidAnterior = sharedPreferences.getString(KEY_USERUID, "");
+            if (!sharedPreferences.getString(KEY_CEDULA, "").isEmpty() && user.getUid().equals(uidAnterior)) {
                 textViewCedula.setText("Cédula: " + sharedPreferences.getString(KEY_CEDULA, ""));
                 String cedula = sharedPreferences.getString(KEY_CEDULA, "");
                 crearBoletas(cedula);
