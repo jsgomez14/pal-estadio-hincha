@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.nfc.NfcAdapter;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,7 +41,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -66,6 +64,7 @@ public class HomeActivity extends AppCompatActivity {
     private final static String PREF_NAME = "prefs";
     private final static String KEY_CEDULA = "cedula";
     private static final String KEY_USERUID = "useruid";
+    private final static String KEY_BOLETAS = "boletas";
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -147,6 +146,7 @@ public class HomeActivity extends AppCompatActivity {
             } else {
                 if (!verificarConexion()) {
                     textViewCedula.setText("Cédula: " + sharedPreferences.getString(KEY_CEDULA, ""));
+                    crearBoletas(sharedPreferences.getString(KEY_CEDULA, ""));
                 } else {
                     myRef.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -181,6 +181,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void crearBoletas(String cedula) {
+        if(verificarConexion()) {
         db.collection("boleteria")
                 .whereEqualTo("cedula",cedula)
                 .get()
@@ -189,9 +190,13 @@ public class HomeActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             if(task.getResult().isEmpty()){
+                                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "No tienes ninguna boletas guardadas", Snackbar.LENGTH_SHORT);
+                                snackbar.show();
                             } else {
                                 for (DocumentSnapshot document : task.getResult()) {
 
+                                    editor.putString(KEY_BOLETAS, document.getData().toString());
+                                    editor.apply();
                                     String[] array = document.getData().toString().split(",");
 
                                     //Asiento
@@ -220,6 +225,34 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     }
                 });
+        } else {
+            Log.d("Conexion", "No hay conexion");
+            if(!sharedPreferences.getString(KEY_BOLETAS,"").isEmpty()) {
+                String[] array = sharedPreferences.getString(KEY_BOLETAS,"").split(",");
+
+                String[] asiento = array[5].split("=");
+                Log.d("Asiento", "El asiento es: " + asiento[1]);
+                //Equipo1
+                String[] equipo1 = array[6].split("=");
+                //Equipo2
+                String[] equipo2 = array[0].split("=");
+                //Fecha
+                String[] fecha = array[8].split("=");
+                //Hora
+                String[] hora = array[1].split("=");
+                //Tribuna
+                String[] tribuna = array[4].split("=");
+
+                MatchInformation boleta = new MatchInformation(asiento[1],equipo1[1],equipo2[1],fecha[1].substring(0,10),hora[1],tribuna[1],sharedPreferences.getString(KEY_BOLETAS,""));
+                boletas.add(boleta);
+                initRecyclerView();
+            } else {
+                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "No existen boletas en el almacenamiento interno", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
+
+        }
+
     }
 
     private void showData(DataSnapshot dataSnapshot) {

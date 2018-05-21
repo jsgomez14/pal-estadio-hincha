@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(new Intent(MainActivity.this, HomeActivity.class));
                 }else
                 {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    setSnackBar(findViewById(R.id.buttonLogin), "El correo o la contraseña no son las correctas");
                 }
             }
         });

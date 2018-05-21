@@ -93,9 +93,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_above="@+id/recyclerView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="222dp"
         android:text="Tus boletas"
         android:textColor="@android:color/black"
         android:textSize="18dp" />
