@@ -15,8 +15,8 @@
         <!--<item
             android:id="@+id/nav_nfc"
             android:icon="@drawable/ic_menu_nfc"
-            android:title="Leer NFC" />
-        <item-->
+            android:title="Leer NFC" />-->
+        <item
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_menu_map"
             android:title="Ir al estadio" />
