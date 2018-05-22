@@ -16,8 +16,11 @@ import android.nfc.tech.Ndef;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,6 +59,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private float heightFab;
     private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+
     TextView textViewVerified, textViewName, textViewCedula;
     FloatingActionButton floatingButton;
     private static ProgressBar progressBar;
@@ -105,6 +111,70 @@ public class HomeActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.setVisibility(View.GONE);
+        navigationView = findViewById(R.id.navigationView);
+        navigationView.setCheckedItem(R.id.nav_home);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.nav_home:
+                        drawerLayout.closeDrawers();
+                        Intent intentHome = new Intent(HomeActivity.this, HomeActivity.class);
+                        startActivity(intentHome);
+                        drawerLayout.setVisibility(View.GONE);
+                        return true;
+
+                    case R.id.nav_camera:
+                        drawerLayout.closeDrawers();
+                        if(verificarConexion()){
+                            if (user.isEmailVerified()) {
+                                Intent intentCamera = new Intent(HomeActivity.this, ScanTicketActivity.class);
+                                startActivity(intentCamera);
+                            } else {
+                                setSnackBar(findViewById(R.id.layoutHome), "Para esto requieres verificación de correo.");
+                            }
+                        } else {
+                            setSnackBar(findViewById(R.id.layoutHome),"Para registrar una boleta requieres de conexión a internet.");
+                        }
+                        drawerLayout.setVisibility(View.GONE);
+                        return false;
+
+                    case R.id.nav_map:
+                        drawerLayout.closeDrawers();
+                        if(verificarConexion()) {
+                            drawerLayout.closeDrawers();
+                            Intent intentMap = new Intent(HomeActivity.this, MapsActivity.class);
+                            startActivity(intentMap);
+                        } else {
+                            setSnackBar(findViewById(R.id.fab),"Para ver como llegar al estadio requieres de conexión a internet.");
+                        }
+                        drawerLayout.setVisibility(View.GONE);
+                     return false;
+
+                    case R.id.nav_exit:
+                        FirebaseAuth.getInstance().signOut();
+                        drawerLayout.closeDrawers();
+                        drawerLayout.setVisibility(View.GONE);
+                        finish();
+                        Intent intentLog = new Intent(HomeActivity.this, MainActivity.class);
+                        startActivity(intentLog);
+                        setSnackBar(findViewById(R.id.fab),"Has finalizado tu sesión con éxito");
+                        return false;
+
+                }
+                return false;
+            }
+        });
+
+
 
         floatingButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingButton.setOnClickListener(new View.OnClickListener() {
@@ -190,8 +260,7 @@ public class HomeActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             if(task.getResult().isEmpty()){
-                                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "No tienes ninguna boletas guardadas", Snackbar.LENGTH_SHORT);
-                                snackbar.show();
+                                setSnackBar(findViewById(R.id.fab),"No hay boletas guardadas.");
                             } else {
                                 for (DocumentSnapshot document : task.getResult()) {
 
@@ -399,32 +468,6 @@ public class HomeActivity extends AppCompatActivity {
         adapter.disableForegroundDispatch(activity);
     }
 
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch(menuItem.getItemId()){
-            case R.id.cerrarSesion:
-                FirebaseAuth.getInstance().signOut();
-                finish();
-                this.startActivity(new Intent(this, MainActivity.class));
-                setSnackBar(findViewById(R.id.fab),"Has finalizado tu sesión con éxito");
-
-                break;
-            case R.id.ubicacion:
-                if(verificarConexion()) {
-                    Intent intentMap = new Intent(this, MapsActivity.class);
-                    this.startActivity(intentMap);
-                } else {
-                    setSnackBar(findViewById(R.id.fab),"Para ver como llegar al estadio requieres de conexión a internet.");
-                }
-                break;
-        }
-        return true;
-    }
-
     public void setSnackBar(View coordinatorLayout, String snackTitle) {
         final Snackbar snackbar = Snackbar.make(coordinatorLayout, snackTitle, Snackbar.LENGTH_SHORT);
         snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -457,5 +500,17 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         else
             return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.setVisibility(View.VISIBLE);
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                drawerLayout.openDrawer(Gravity.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
