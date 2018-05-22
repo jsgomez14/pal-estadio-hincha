@@ -268,21 +268,34 @@ public class HomeActivity extends AppCompatActivity {
                                     editor.apply();
                                     String[] array = document.getData().toString().split(",");
 
-                                    //Asiento
-                                    String[] asiento = array[5].split("=");
 
-                                    //Equipo1
-                                    String[] equipo1 = array[6].split("=");
-                                    //Equipo2
-                                    String[] equipo2 = array[0].split("=");
-                                    //Fecha
-                                    String[] fecha = array[8].split("=");
-                                    //Hora
-                                    String[] hora = array[1].split("=");
-                                    //Tribuna
-                                    String[] tribuna = array[4].split("=");
+                                    String[] asiento = {""};
+                                    String[] equipo1 = {""};
+                                    String[] equipo2 = {""};
+                                    String[] fecha = {""};
+                                    String[] hora = {""};
+                                    String[] tribuna = {""};
 
-                                    MatchInformation boleta = new MatchInformation(asiento[1],equipo1[1],equipo2[1],fecha[1].substring(0,10),hora[1],tribuna[1],document.getData().toString());
+                                    for (int i = 0; i < array.length; i++) {
+
+                                        String[] temp = array[i].split("=");
+                                        Log.d("Valor", temp[0]);
+                                        if (temp[0].contains("asiento")) {
+                                            asiento = temp;
+                                        } else if (temp[0].contains("equipo1")) {
+                                            equipo1 = temp;
+                                        } else if (temp[0].contains("equipo2")) {
+                                            equipo2 = temp;
+                                        } else if (temp[0].contains("fecha")) {
+                                            fecha = temp;
+                                        } else if (temp[0].contains("hora")) {
+                                            hora = temp;
+                                        } else if (temp[0].contains("tribuna")) {
+                                            tribuna = temp;
+                                        }
+                                    }
+
+                                    MatchInformation boleta = new MatchInformation(asiento[1], equipo1[1], equipo2[1], fecha[1], hora[1], tribuna[1], document.getData().toString());
                                     boletas.add(boleta);
                                     initRecyclerView();
                                 }
@@ -299,19 +312,30 @@ public class HomeActivity extends AppCompatActivity {
             if(!sharedPreferences.getString(KEY_BOLETAS,"").isEmpty()) {
                 String[] array = sharedPreferences.getString(KEY_BOLETAS,"").split(",");
 
-                String[] asiento = array[5].split("=");
-                Log.d("Asiento", "El asiento es: " + asiento[1]);
-                //Equipo1
-                String[] equipo1 = array[6].split("=");
-                //Equipo2
-                String[] equipo2 = array[0].split("=");
-                //Fecha
-                String[] fecha = array[8].split("=");
-                //Hora
-                String[] hora = array[1].split("=");
-                //Tribuna
-                String[] tribuna = array[4].split("=");
 
+                String[] asiento = {""};
+                String[] equipo1 = {""};
+                String[] equipo2 = {""};
+                String[] fecha = {""};
+                String[] hora = {""};
+                String[] tribuna = {""};
+
+                for (int i = 0; i < array.length; i++) {
+                    String[] temp = array[i].split("=");
+                    if (temp[0].equals("asiento")) {
+                        asiento = temp;
+                    } else if (temp[0].equals("equipo1")) {
+                        equipo1 = temp;
+                    } else if (temp[0].equals("equipo2")) {
+                        equipo2 = temp;
+                    } else if (temp[0].equals("fecha")) {
+                        fecha = temp;
+                    } else if (temp[0].equals("hora")) {
+                        hora = temp;
+                    } else if (temp[0].equals("tribuna")) {
+                        tribuna = temp;
+                    }
+                }
                 MatchInformation boleta = new MatchInformation(asiento[1],equipo1[1],equipo2[1],fecha[1].substring(0,10),hora[1],tribuna[1],sharedPreferences.getString(KEY_BOLETAS,""));
                 boletas.add(boleta);
                 initRecyclerView();

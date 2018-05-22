@@ -88,7 +88,13 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
 
                                     String[] array = document.getData().toString().split(",");
                                     //Cedula actual
-                                    String[] ced = array[7].split("=");
+                                    String[] ced = {""};
+                                    for (int i = 0; i < array.length; i++) {
+                                        String[] temp = array[i].split("=");
+                                        if (temp[0].contains("cedula")) {
+                                            ced = temp;
+                                        }
+                                    }
                                     if(!ced[1].equals("-1")) {
                                         Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Lo sentimos, esa boleta ya fue registrada", Snackbar.LENGTH_SHORT);
                                         snackbar.show();
