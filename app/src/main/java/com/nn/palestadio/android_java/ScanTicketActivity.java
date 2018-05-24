@@ -50,7 +50,7 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
         getWindow().setBackgroundDrawable(null);
         cedula = sharedPreferences.getString(KEY_CEDULA, "");
 
-        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "¡Escanea el código de barras de tu boleta!", Snackbar.LENGTH_SHORT);
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "¡Escanea el código de barras de tu boleta!", Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 
@@ -80,7 +80,7 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             if(task.getResult().isEmpty()){
-                                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Lo sentimos, no es un código de barras correcto.", Snackbar.LENGTH_SHORT);
+                                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Lo sentimos, no es un código de barras correcto.", Snackbar.LENGTH_LONG);
                                 snackbar.show();
                                 onResume();
                             } else {
@@ -96,7 +96,7 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
                                         }
                                     }
                                     if(!ced[1].equals("-1")) {
-                                        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Lo sentimos, esa boleta ya fue registrada", Snackbar.LENGTH_SHORT);
+                                        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Lo sentimos, esa boleta ya fue registrada", Snackbar.LENGTH_LONG);
                                         snackbar.show();
                                         Intent HomeActivity = new Intent(ScanTicketActivity.this, HomeActivity.class);
                                         startActivity(HomeActivity);
@@ -104,7 +104,7 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
                                         DocumentReference boleta = db.collection("boleteria").document(document.getId());
                                         boleta.update("cedula",cedula);
                                         Intent HomeActivity = new Intent(ScanTicketActivity.this, HomeActivity.class);
-                                        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Se ha creado la boleta con éxito", Snackbar.LENGTH_SHORT);
+                                        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Se ha creado la boleta con éxito", Snackbar.LENGTH_LONG);
                                         snackbar.show();
                                         startActivity(HomeActivity);
                                     }
@@ -112,7 +112,7 @@ public class ScanTicketActivity extends AppCompatActivity implements ZBarScanner
                             }
 
                         } else {
-                            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Existen problemas con la base de datos", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Existen problemas con la base de datos", Snackbar.LENGTH_LONG);
                             snackbar.show();
                             startActivity(new Intent(ScanTicketActivity.this, HomeActivity.class));
                         }

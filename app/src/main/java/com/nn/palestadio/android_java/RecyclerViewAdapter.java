@@ -31,10 +31,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-
         MatchInformation m = boletas.get(position);
         holder.fecha.setText(m.getFecha());
-        holder.silla.setText("Silla: " + m.getAsiento());
+        holder.silla.setText("Silla: " + m.getAsiento().replace("}", ""));
         holder.hora.setText("HORA OFICIAL DEL PARTIDO " + m.getHora());
         holder.tribuna.setText("Tribuna: " + m.getTribuna());
         holder.equipo1.setImageResource(setImageEquipo(m.getEquipo1()));

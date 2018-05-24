@@ -271,19 +271,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     finish();
                     startActivity(new Intent(this, SignUpActivity.class));
                 } else {
-                    setSnackBar(findViewById(R.id.buttonLogin), "Para esto necesitas conexión a internet.");
+                    setSnackBar(findViewById(R.id.buttonLogin), "Comprueba tu conexión a internet.");
                 }
                 break;
             case R.id.buttonLogin:
                 if (verificarConexion()) userLogin();
                 else
-                    setSnackBar(findViewById(R.id.buttonLogin), "Para esto necesitas conexión a internet.");
+                    setSnackBar(findViewById(R.id.buttonLogin), "Comprueba tu conexión a internet.");
                 break;
         }
     }
 
     private void setSnackBar(final View coordinatorLayout, String snackTitle) {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, snackTitle, Snackbar.LENGTH_SHORT);
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, snackTitle, Snackbar.LENGTH_LONG);
         snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
             @Override
             public void onShown(Snackbar transientBottomBar) {
@@ -307,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean verificarConexion() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting())
+        if (netInfo != null && netInfo.isConnected())
             return true;
         else
             return false;

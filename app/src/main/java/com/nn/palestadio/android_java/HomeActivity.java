@@ -127,8 +127,6 @@ public class HomeActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.nav_home:
                         drawerLayout.closeDrawers();
-                        Intent intentHome = new Intent(HomeActivity.this, HomeActivity.class);
-                        startActivity(intentHome);
                         drawerLayout.setVisibility(View.GONE);
                         return true;
 
@@ -260,6 +258,8 @@ public class HomeActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             if(task.getResult().isEmpty()){
+                                editor.remove(KEY_BOLETAS);
+                                editor.apply();
                                 setSnackBar(findViewById(R.id.fab),"No hay boletas guardadas.");
                             } else {
                                 for (DocumentSnapshot document : task.getResult()) {
@@ -302,15 +302,16 @@ public class HomeActivity extends AppCompatActivity {
                             }
 
                         } else {
-                            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Existen problemas con la base de datos", Snackbar.LENGTH_SHORT);
-                            snackbar.show();
+                            setSnackBar(findViewById(R.id.fab), "Existen problemas con la base de datos");
                         }
                     }
                 });
         } else {
             Log.d("Conexion", "No hay conexion");
             if(!sharedPreferences.getString(KEY_BOLETAS,"").isEmpty()) {
-                String[] array = sharedPreferences.getString(KEY_BOLETAS,"").split(",");
+                String y = sharedPreferences.getString(KEY_BOLETAS, "").replace("{", "");
+                y = y.replace("}", "");
+                String[] array = y.split(",");
 
 
                 String[] asiento = {""};
@@ -322,26 +323,26 @@ public class HomeActivity extends AppCompatActivity {
 
                 for (int i = 0; i < array.length; i++) {
                     String[] temp = array[i].split("=");
-                    if (temp[0].equals("asiento")) {
+                    if (temp[0].contains("asiento")) {
                         asiento = temp;
-                    } else if (temp[0].equals("equipo1")) {
+                    } else if (temp[0].contains("equipo1")) {
                         equipo1 = temp;
-                    } else if (temp[0].equals("equipo2")) {
+                    } else if (temp[0].contains("equipo2")) {
                         equipo2 = temp;
-                    } else if (temp[0].equals("fecha")) {
+                    } else if (temp[0].contains("fecha")) {
                         fecha = temp;
-                    } else if (temp[0].equals("hora")) {
+                    } else if (temp[0].contains("hora")) {
                         hora = temp;
-                    } else if (temp[0].equals("tribuna")) {
+                    } else if (temp[0].contains("tribuna")) {
                         tribuna = temp;
                     }
                 }
-                MatchInformation boleta = new MatchInformation(asiento[1],equipo1[1],equipo2[1],fecha[1].substring(0,10),hora[1],tribuna[1],sharedPreferences.getString(KEY_BOLETAS,""));
+                Log.d("PUTOERROR", y);
+                MatchInformation boleta = new MatchInformation(asiento[1], equipo1[1], equipo2[1], fecha[1], hora[1], tribuna[1], sharedPreferences.getString(KEY_BOLETAS, ""));
                 boletas.add(boleta);
                 initRecyclerView();
             } else {
-                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "No existen boletas en el almacenamiento interno", Snackbar.LENGTH_SHORT);
-                snackbar.show();
+                setSnackBar(findViewById(R.id.fab), "No existen boletas en el almacenamiento interno");
             }
 
         }
@@ -368,7 +369,7 @@ public class HomeActivity extends AppCompatActivity {
     public static void createQR(Context context, int position){
         progressBar.setVisibility(View.VISIBLE);
         Intent QRCode = new Intent(context, QRCodeGenerated.class);
-        QRCode.putExtra("EXTRA_BARCODE_SCANNED", boletas.get(position).getInfo());
+        QRCode.putExtra("EXTRA_BARCODE_SCANNED", "PAL" + boletas.get(position).getInfo());
         context.startActivity(QRCode);
 
     }
@@ -493,7 +494,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void setSnackBar(View coordinatorLayout, String snackTitle) {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, snackTitle, Snackbar.LENGTH_SHORT);
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, snackTitle, Snackbar.LENGTH_LONG);
         snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
             @Override
             public void onShown(Snackbar transientBottomBar) {
@@ -520,7 +521,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean verificarConexion() {
         ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if(netInfo != null && netInfo.isConnectedOrConnecting())
+        if (netInfo != null && netInfo.isConnected())
             return true;
         else
             return false;
